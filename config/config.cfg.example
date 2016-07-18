@@ -1,0 +1,8 @@
+[account]
+consumer_key = spam
+consumer_secret = ham
+access_token = eggs
+access_secret = cheese
+
+[files]
+backup_path = bacon
