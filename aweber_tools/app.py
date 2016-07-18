@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from aweber_api import APIException, AWeberResponse
-
 from aweber_tools.actions import \
     ActionException, DeleteInactive, DownloadAll, Terminate
 

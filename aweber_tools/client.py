@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from aweber_api import AWeberAPI, APIException
+
 from aweber_tools.include.msg import ERROR_NO_AUTH_URL, EXCEPTION_API
 
 from aweber_tools.utils.auth_verifier import \
