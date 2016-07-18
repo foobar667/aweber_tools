@@ -62,8 +62,7 @@ class App(object):
 
         config = self._client.config
         if (not config.access_token) or (not config.access_secret):
-            if (not self._authorize()):
-                return
+            self._authorize()
             self._update_config()
 
         self._connect()
@@ -148,10 +147,7 @@ class App(object):
                         break
 
         if (not parse_success) and (not manual_success):
-            print('\n' + ERROR_AUTH)
-            return False
-
-        return True
+            raise AppException('\n' + ERROR_AUTH)
 
     def _check_config(self):
 
