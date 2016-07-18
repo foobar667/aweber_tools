@@ -11,8 +11,16 @@
 
 ## Installation
 
+Although optional, installing the package lets you download and worry only
+about the **examples** directory because that's all you will need to run the
+app.
+
 ```console
 pip install --user -e git+https://github.com/foobar667/aweber_tools#egg=aweber_tools
+```
+or
+```console
+easy_install --user git+https://github.com/foobar667/aweber_tools#egg=aweber_tools
 ```
 or
 ```console
@@ -21,17 +29,32 @@ python setup.py install
 or
 ```console
 python setup.py sdist
-pip install <path_to_sdist>
+pip install --user <path_to_sdist>
 ```
+or
+```console
+pip install --user --no-index --find-links=<source_root> aweber_tools
+```
+or
+```console
+easy_install --user <source_root>
+```
+
+**--user** option installs the package to the Python user install directory.
+You may not use it, but you might need sudo privileges.
 
 ## Usage
 
-There's an **Examples** directory in the source tree with the needed files.
+There's an **examples** directory in the source tree with the needed files.
 Rename **config.cfg.example** to **config.cfg**, edit it to match your AWeber
 keys and run
 ```python
 python awtools.py
 ```
+
+If you haven't installed the package, copy both **awtools.py** and
+**config.cfg** to the root of the source tree**.
+You'll also have to manually install the required packages (see **Requires**).
 
 ### Config format
 
