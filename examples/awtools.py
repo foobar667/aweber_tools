@@ -6,4 +6,4 @@ try:
     app.run()
 except AppException as exception:
     print(str(exception))
-    input('Press any key to exit..')
+    input('\nPress any key to exit..')
