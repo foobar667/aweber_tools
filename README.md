@@ -40,20 +40,20 @@ or
 easy_install --user <source_root>
 ```
 
-**--user** option installs the package to the Python user install directory.
-You may not use it, but you might need sudo privileges.
+The **--user** option installs the package to the Python user install
+directory. You may not use it, but you might need sudo privileges.
 
 ## Usage
 
 There's an **examples** directory in the source tree with the needed files.
 Rename **config.cfg.example** to **config.cfg**, edit it to match your AWeber
 keys and run
-```python
+```console
 python awtools.py
 ```
 
 If you haven't installed the package, copy both **awtools.py** and
-**config.cfg** to the root of the source tree**.
+**config.cfg** to the root of the source tree.
 You'll also have to manually install the required packages (see **Requires**).
 
 ### Config format
