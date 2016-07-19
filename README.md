@@ -95,5 +95,4 @@ page in your default browser. Sign in there and copy the generated
 
 ### API application permissions
 
-If you're creating a new API application, set its application permissions to
-**Request Subscriber Data**.
+Set your API application's permissions to **Request Subscriber Data**.
