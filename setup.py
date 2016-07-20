@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name             = 'aweber_tools',
-    version          = '0.1',
+    version          = '0.1.1',
     description      = 'AWeber API Python tools',
     packages         = find_packages(),
     classifiers = [

@@ -16,6 +16,10 @@ import os
 import time
 import webbrowser
 
+EXCEPTION_API_LIMIT_MSG = 'Rate limit exceeded'
+EXCEPTION_API_LIMIT_TYPE = 'ForbiddenError'
+SLEEP_THROTTLE = 1
+
 class ClientAuthException(Exception):
     pass
 
@@ -224,12 +228,19 @@ class Client(ClientData):
 
         self._request_wait()
 
-        try:
-            subscriber.delete()
-        except APIException as e:
-            (excType, excMsg) = str(e).split(': ', 1)
-            raise ClientException(
-                EXCEPTION_API + ': [' + excType + '] ' + excMsg)
+        success = False
+        while not success:
+            try:
+                subscriber.delete()
+                success = True
+            except APIException as e:
+                (excType, excMsg) = str(e).split(': ', 1)
+                if (excType == EXCEPTION_API_LIMIT_TYPE) \
+                        and (EXCEPTION_API_LIMIT_MSG in excMsg):
+                    time.sleep(SLEEP_THROTTLE)
+                else:
+                    raise ClientException(
+                        EXCEPTION_API + ': [' + excType + '] ' + excMsg)
 
     def find_subscribers(self, find_params):
 
@@ -259,7 +270,7 @@ class Client(ClientData):
             raise ClientException(
                 EXCEPTION_API + ': [' + excType + '] ' + excMsg)
 
-        return data
+        return self._make_list(data)
 
     def get_subscriber_activity(self, subscriber):
 
@@ -289,7 +300,7 @@ class Client(ClientData):
             raise ClientException(
                 EXCEPTION_API + ': [' + excType + '] ' +excMsg)
 
-        return data
+        return self._make_list(data)
 
     def save_tokens(
             self, access_token=None, access_secret=None, filename=None):
@@ -344,9 +355,26 @@ class Client(ClientData):
 
         return True
 
+    def _make_list(self, data):
+
+        # API throttle handling for collection fetching
+
+        result = []
+
+        # Entries are paginated, when a page ends a new request is made to
+        # fetch the next one.
+        for i in range(0, data.total_size, data.page_size):
+            for j in range(0, data.page_size):
+                if (i + j) > data.total_size - 1:
+                    break
+                result.append(self._throttle_data(data, i+j))
+            self._request_wait()
+
+        return result
+
     def _request_wait(self):
 
-        # The API has a limit of 60 requests/minute per account
+        # Wait until a full second passes since the last API request.
 
         request_time = datetime.now()
         delta = request_time - self._last_request_time
@@ -356,3 +384,25 @@ class Client(ClientData):
             time.sleep(1 - delta_seconds)
 
         self._last_request_time = datetime.now()
+
+    def _throttle_data(self, data, offset):
+
+        result = None
+
+        # If the API is throttling requests, sleep and try again.
+
+        success = False
+        while not success:
+            try:
+                result = data[offset]
+                success = True
+            except APIException as e:
+                (excType, excMsg) = str(e).split(': ', 1)
+                if (excType == EXCEPTION_API_LIMIT_TYPE) \
+                        and (EXCEPTION_API_LIMIT_MSG in excMsg):
+                    time.sleep(SLEEP_THROTTLE)
+                else:
+                    raise ClientException(
+                        EXCEPTION_API + ': [' + excType + '] ' + excMsg)
+
+        return result
